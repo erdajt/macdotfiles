@@ -19,7 +19,7 @@ case "$1" in
     *) usage ;;
 esac
 
-python - <<PY
+python3 - <<PY
 import pathlib
 import re
 
