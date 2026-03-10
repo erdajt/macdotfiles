@@ -1,0 +1,27 @@
+:root {
+    --font-family: 'CaskaydiaCove Nerd Font', monospace;
+    --border-radius: 8px;
+}
+
+.main-nowPlayingBar-container {
+    background: var(--spice-player) !important;
+    border-top: 1px solid rgba(122, 162, 247, 0.3);
+}
+
+.Root__nav-bar {
+    background: var(--spice-sidebar) !important;
+    border-right: 1px solid rgba(122, 162, 247, 0.15);
+}
+
+.main-topBar-container {
+    background: transparent !important;
+}
+
+button,
+.main-playButton-PlayButton {
+    border-radius: var(--border-radius) !important;
+}
+
+.x-toggle-indicatorWrapper {
+    border-radius: 50px !important;
+}
