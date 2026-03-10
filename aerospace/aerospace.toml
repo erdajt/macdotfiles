@@ -48,8 +48,12 @@ alt-q = 'exec-and-forget open -na Alacritty'
 # OPT+E = file manager (Finder on mac)
 alt-e = 'exec-and-forget open -na Finder'
 
-# OPT+SPACE = app launcher (Spotlight)
-alt-space = 'exec-and-forget open /System/Library/CoreServices/Spotlight.app'
+# OPT+SPACE = app launcher (fzf themed picker)
+alt-space = 'exec-and-forget $HOME/.config/aerospace/scripts/launcher.sh'
+
+# OPT+SHIFT+A = decrease opacity, OPT+SHIFT+D = increase opacity
+alt-shift-a = 'exec-and-forget $HOME/.config/alacritty/opacity.sh -'
+alt-shift-d = 'exec-and-forget $HOME/.config/alacritty/opacity.sh +'
 
 # OPT+SHIFT+Q = close/kill active window
 alt-shift-q = 'close'
@@ -157,7 +161,7 @@ enter = 'mode main'
 # Window rules
 # ============================================
 [[on-window-detected]]
-if.window-title-regex-substring = 'Theme Toggle|Wallpaper Picker'
+if.window-title-regex-substring = 'Theme Toggle|Wallpaper Picker|App Launcher'
 run = 'layout floating'
 
 [[on-window-detected]]

@@ -177,16 +177,16 @@ main() {
         if $no_menu; then
             next="$current"
         else
-            # Launch fzf in floating alacritty
-            /bin/rm -f /tmp/theme-toggle-result
             # Launch fzf in centered floating alacritty
-            # Screen: 1280x832, picker ~500x300 -> pos ~390,266
+            /bin/rm -f /tmp/theme-toggle-result
+            local cols=40 lines=12
+            local pos_x=640 pos_y=0
             alacritty --title "Theme Toggle" \
-                -o 'window.dimensions.columns=40' \
-                -o 'window.dimensions.lines=12' \
+                -o "window.dimensions.columns=$cols" \
+                -o "window.dimensions.lines=$lines" \
                 -o 'window.decorations="none"' \
-                -o 'window.position.x=390' \
-                -o 'window.position.y=266' \
+                -o "window.position.x=$pos_x" \
+                -o "window.position.y=$pos_y" \
                 -o 'window.startup_mode="Windowed"' \
                 -e "$SCRIPT_PATH" --pick
             # Read result

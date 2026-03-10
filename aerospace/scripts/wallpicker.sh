@@ -70,12 +70,13 @@ if [[ "$1" == "--pick" ]]; then
 fi
 
 # Launch fzf picker in a centered floating alacritty window
-# Screen: 1280x832, picker ~700x500 -> pos ~290,166
+cols=60 lines=20
+pos_x=640 pos_y=0
 alacritty --title "Wallpaper Picker" \
-    -o 'window.dimensions.columns=60' \
-    -o 'window.dimensions.lines=20' \
+    -o "window.dimensions.columns=$cols" \
+    -o "window.dimensions.lines=$lines" \
     -o 'window.decorations="none"' \
-    -o 'window.position.x=290' \
-    -o 'window.position.y=166' \
+    -o "window.position.x=$pos_x" \
+    -o "window.position.y=$pos_y" \
     -o 'window.startup_mode="Windowed"' \
     -e "$SCRIPT_PATH" --pick &

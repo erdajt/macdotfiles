@@ -13,7 +13,7 @@ glyph_offset = { x = 0, y = 0 }
 [window]
 decorations = "buttonless"
 dynamic_padding = true
-opacity = 1.00
+opacity = 0.95
 startup_mode = "Maximized"
 padding = { x = 0, y = 0 }
 
