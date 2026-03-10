@@ -1,15 +1,12 @@
 [general]
 import = ["~/.config/alacritty/themes/active.toml"]
 
-[env]
-WINIT_X11_SCALE_FACTOR = "1.0"
-
 [font]
-size = 16.0
-normal = { family = "Cascadia Code NF", style = "SemiBold Italic" }
-bold = { family = "Cascadia Code NF", style = "Bold" }
-italic = { family = "Cascadia Code NF", style = "Italic" }
-bold_italic = { family = "Cascadia Code NF", style = "Bold Italic" }
+size = 18.7
+normal = { family = "CaskaydiaCove Nerd Font", style = "SemiBold Italic" }
+bold = { family = "CaskaydiaCove Nerd Font", style = "Bold" }
+italic = { family = "CaskaydiaCove Nerd Font", style = "Italic" }
+bold_italic = { family = "CaskaydiaCove Nerd Font", style = "Bold Italic" }
 offset = { x = 0, y = 0 }
 glyph_offset = { x = 0, y = 0 }
 
@@ -49,10 +46,10 @@ save_to_clipboard = true
 
 [[keyboard.bindings]]
 key = "A"
-mods = "Super|Shift"
-command = { program = "$HOME/.config/alacritty/opacity.sh", args = ["-"] }
+mods = "Control|Shift"
+command = { program = "/Users/erdajtt/.config/alacritty/opacity.sh", args = ["-"] }
 
 [[keyboard.bindings]]
 key = "D"
-mods = "Super|Shift"
-command = { program = "$HOME/.config/alacritty/opacity.sh", args = ["+"] }
+mods = "Control|Shift"
+command = { program = "/Users/erdajtt/.config/alacritty/opacity.sh", args = ["+"] }
