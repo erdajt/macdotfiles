@@ -157,6 +157,10 @@ enter = 'mode main'
 # Window rules
 # ============================================
 [[on-window-detected]]
+if.window-title-regex-substring = 'Theme Toggle|Wallpaper Picker'
+run = 'layout floating'
+
+[[on-window-detected]]
 if.app-name-regex-substring = 'System Preferences|System Settings'
 run = 'layout floating'
 

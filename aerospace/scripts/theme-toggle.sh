@@ -38,15 +38,27 @@ WALL_DIRS=(
     rose-pine "$HOME/Wallpapers/rose-pine"
 )
 
+# Theme-aware fzf colors
+typeset -A FZF_COLORS
+FZF_COLORS=(
+    tokyo-night "--color=bg+:#24283b,bg:#1a1b26,fg:#c0caf5,fg+:#c0caf5,hl:#7aa2f7,hl+:#7dcfff,prompt:#7aa2f7,pointer:#f7768e,marker:#9ece6a,border:#7aa2f7"
+    everforest "--color=bg+:#2e383c,bg:#272e33,fg:#d3c6aa,fg+:#d3c6aa,hl:#a7c080,hl+:#83c092,prompt:#a7c080,pointer:#e67e80,marker:#a7c080,border:#a7c080"
+    dracula "--color=bg+:#44475a,bg:#282a36,fg:#f8f8f2,fg+:#f8f8f2,hl:#bd93f9,hl+:#ff79c6,prompt:#bd93f9,pointer:#ff5555,marker:#50fa7b,border:#bd93f9"
+    tokyo-dracula "--color=bg+:#44475a,bg:#282a36,fg:#f8f8f2,fg+:#f8f8f2,hl:#bd93f9,hl+:#ff79c6,prompt:#bd93f9,pointer:#ff5555,marker:#50fa7b,border:#bd93f9"
+    nord "--color=bg+:#3b4252,bg:#2e3440,fg:#eceff4,fg+:#eceff4,hl:#88c0d0,hl+:#8fbcbb,prompt:#88c0d0,pointer:#bf616a,marker:#a3be8c,border:#88c0d0"
+    catppuccin-mocha "--color=bg+:#313244,bg:#1e1e2e,fg:#cdd6f4,fg+:#cdd6f4,hl:#89b4fa,hl+:#74c7ec,prompt:#89b4fa,pointer:#f38ba8,marker:#a6e3a1,border:#89b4fa"
+    rose-pine "--color=bg+:#26233a,bg:#191724,fg:#e0def4,fg+:#e0def4,hl:#c4a7e7,hl+:#9ccfd8,prompt:#c4a7e7,pointer:#eb6f92,marker:#31748f,border:#c4a7e7"
+)
+
 theme_label() {
     case "$1" in
-        everforest) echo "Everforest" ;;
-        tokyo-night) echo "Tokyo Night" ;;
-        tokyo-dracula) echo "Tokyo/Dracula Mix" ;;
-        dracula) echo "Dracula" ;;
-        nord) echo "Nord" ;;
-        catppuccin-mocha) echo "Catppuccin Mocha" ;;
-        rose-pine) echo "Rose Pine" ;;
+        everforest) echo " Everforest" ;;
+        tokyo-night) echo " Tokyo Night" ;;
+        tokyo-dracula) echo " Tokyo/Dracula" ;;
+        dracula) echo " Dracula" ;;
+        nord) echo " Nord" ;;
+        catppuccin-mocha) echo " Catppuccin Mocha" ;;
+        rose-pine) echo " Rose Pine" ;;
         *) echo "$1" ;;
     esac
 }
@@ -54,7 +66,7 @@ theme_label() {
 read_wall_state() {
     local theme="$1"
     [[ -f "$WALL_STATE" ]] || return 1
-    awk -F= -v t="$theme" '$1==t{print $2}' "$WALL_STATE"
+    /usr/bin/awk -F= -v t="$theme" '$1==t{print $2}' "$WALL_STATE"
 }
 
 write_wall_state() {
@@ -70,8 +82,7 @@ pick_wallpaper() {
     local dir="${WALL_DIRS[$theme]:-$HOME/Wallpapers}"
     [[ -d "$dir" ]] || dir="$HOME/Wallpapers"
     [[ -d "$dir" ]] || return 1
-
-    local files=( ${(f)"$(find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' \) 2>/dev/null)"} )
+    local files=( ${(f)"$(/usr/bin/find "$dir" -maxdepth 1 -type f \( -iname '*.jpg' -o -iname '*.png' -o -iname '*.jpeg' \) 2>/dev/null)"} )
     [[ ${#files[@]} -gt 0 ]] || return 1
     echo "${files[RANDOM % ${#files[@]} + 1]}"
 }
@@ -82,21 +93,21 @@ apply_theme() {
     # Alacritty
     local alac="${ALACRITTY_THEME[$theme]}"
     if [[ -n "$alac" && -f "$alac" ]]; then
-        cp "$alac" "$ALACRITTY_ACTIVE"
+        /bin/cp "$alac" "$ALACRITTY_ACTIVE"
         alacritty msg config-reload >/dev/null 2>&1 || true
     fi
 
     # Borders
     local ac="${BORDER_ACTIVE[$theme]:-0xff7aa2f7}"
     local ic="${BORDER_INACTIVE[$theme]:-0xff24283b}"
-    pkill -x borders 2>/dev/null || true
+    /usr/bin/pkill -x borders 2>/dev/null || true
     borders active_color="$ac" inactive_color="$ic" width=3.0 style=round &
 
-    # Save state
+    # Save state BEFORE reloading sketchybar so colors.lua reads new theme
     echo "$theme" > "$STATE_FILE"
     echo "$theme" > "$NVIM_THEME_FILE" 2>/dev/null || true
 
-    # Sketchybar - reload to pick up new theme
+    # Sketchybar - reload to pick up new theme colors
     sketchybar --reload 2>/dev/null || true
 
     # Wallpaper
@@ -106,15 +117,18 @@ apply_theme() {
         wp="$(pick_wallpaper "$theme" 2>/dev/null || true)"
     fi
     if [[ -n "${wp:-}" && -f "$wp" ]]; then
-        osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$wp\"" 2>/dev/null || true
+        /usr/bin/osascript -e "tell application \"System Events\" to tell every desktop to set picture to \"$wp\"" 2>/dev/null || true
         write_wall_state "$theme" "$wp"
     fi
 
-    osascript -e "display notification \"$(theme_label "$theme")\" with title \"Theme Switched\"" 2>/dev/null || true
+    /usr/bin/osascript -e "display notification \"$(theme_label "$theme")\" with title \"Theme Switched\"" 2>/dev/null || true
 }
 
-choose_theme() {
+# fzf picker mode - runs inside floating alacritty
+run_picker() {
     local current="$1"
+    local fzf_theme="${FZF_COLORS[$current]:-${FZF_COLORS[tokyo-night]}}"
+
     local labels=()
     for t in "${THEMES[@]}"; do
         if [[ "$t" == "$current" ]]; then
@@ -125,14 +139,16 @@ choose_theme() {
     done
 
     local choice
-    choice=$(osascript -e "choose from list {$(printf '"%s",' "${labels[@]}" | sed 's/,$//') } with prompt \"Select Theme\" with title \"Theme Toggle\" default items {\"$(theme_label "$current") [active]\"}" 2>/dev/null || echo "false")
+    choice=$(printf '%s\n' "${labels[@]}" | fzf ${=fzf_theme} --border=rounded --prompt="theme > " --header="  Select Theme" --reverse --height=100%)
 
-    [[ "$choice" == "false" ]] && return 1
+    [[ -z "$choice" ]] && exit 0
 
+    # Strip [active] and icons, map back to theme key
     choice="${choice% \[active\]}"
+    choice="${choice## }"
     for t in "${THEMES[@]}"; do
-        if [[ "$(theme_label "$t")" == "$choice" ]]; then
-            echo "$t"
+        if [[ "$(theme_label "$t")" == " $choice" || "$(theme_label "$t")" == "$choice" ]]; then
+            echo "$t" > /tmp/theme-toggle-result
             return 0
         fi
     done
@@ -141,13 +157,17 @@ choose_theme() {
 
 main() {
     local current next no_menu=false
-    current="$(cat "$STATE_FILE" 2>/dev/null || echo "tokyo-night")"
+    current="$(/bin/cat "$STATE_FILE" 2>/dev/null || echo "tokyo-night")"
 
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --apply-current) no_menu=true ;;
             --theme) shift; next="$1" ;;
             --no-menu) no_menu=true ;;
+            --pick)
+                run_picker "$current"
+                exit $?
+                ;;
         esac
         shift
     done
@@ -156,7 +176,18 @@ main() {
         if $no_menu; then
             next="$current"
         else
-            next="$(choose_theme "$current")" || exit 0
+            # Launch fzf in floating alacritty
+            /bin/rm -f /tmp/theme-toggle-result
+            alacritty --title "Theme Toggle" \
+                -o 'window.dimensions.columns=40' \
+                -o 'window.dimensions.lines=12' \
+                -o 'window.decorations="none"' \
+                -e "$0" --pick
+            # Read result
+            [[ -f /tmp/theme-toggle-result ]] || exit 0
+            next="$(/bin/cat /tmp/theme-toggle-result)"
+            /bin/rm -f /tmp/theme-toggle-result
+            [[ -n "$next" ]] || exit 0
         fi
     fi
 
