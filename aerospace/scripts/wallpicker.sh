@@ -1,5 +1,6 @@
 #!/bin/zsh
 PATH="/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
+SCRIPT_PATH="${0:A}"
 
 STATE_FILE="$HOME/.config/aerospace/.theme-state"
 WALL_STATE="$HOME/.config/aerospace/.wallpaper-state"
@@ -68,5 +69,13 @@ if [[ "$1" == "--pick" ]]; then
     exit 0
 fi
 
-# Launch fzf picker in a floating alacritty window
-alacritty --title "Wallpaper Picker" -o 'window.dimensions.columns=60' -o 'window.dimensions.lines=20' -o 'window.decorations="none"' -e "$0" --pick &
+# Launch fzf picker in a centered floating alacritty window
+# Screen: 1280x832, picker ~700x500 -> pos ~290,166
+alacritty --title "Wallpaper Picker" \
+    -o 'window.dimensions.columns=60' \
+    -o 'window.dimensions.lines=20' \
+    -o 'window.decorations="none"' \
+    -o 'window.position.x=290' \
+    -o 'window.position.y=166' \
+    -o 'window.startup_mode="Windowed"' \
+    -e "$SCRIPT_PATH" --pick &

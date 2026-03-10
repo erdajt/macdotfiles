@@ -1,5 +1,6 @@
 #!/bin/zsh
 PATH="/usr/bin:/bin:/usr/sbin:/sbin:/opt/homebrew/bin:$PATH"
+SCRIPT_PATH="${0:A}"
 
 THEMES=(everforest tokyo-night tokyo-dracula dracula nord catppuccin-mocha rose-pine)
 STATE_FILE="$HOME/.config/aerospace/.theme-state"
@@ -178,11 +179,16 @@ main() {
         else
             # Launch fzf in floating alacritty
             /bin/rm -f /tmp/theme-toggle-result
+            # Launch fzf in centered floating alacritty
+            # Screen: 1280x832, picker ~500x300 -> pos ~390,266
             alacritty --title "Theme Toggle" \
                 -o 'window.dimensions.columns=40' \
                 -o 'window.dimensions.lines=12' \
                 -o 'window.decorations="none"' \
-                -e "$0" --pick
+                -o 'window.position.x=390' \
+                -o 'window.position.y=266' \
+                -o 'window.startup_mode="Windowed"' \
+                -e "$SCRIPT_PATH" --pick
             # Read result
             [[ -f /tmp/theme-toggle-result ]] || exit 0
             next="$(/bin/cat /tmp/theme-toggle-result)"
