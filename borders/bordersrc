@@ -1,11 +1,15 @@
 #!/bin/bash
 
+# Tokyo Night colors matching hyprland border config
+# active: #7aa2f7 (blue) -> #bb9af7 (magenta) gradient
+# inactive: #24283b with transparency
+
 options=(
 	style=round
-	width=5.0
-	hidpi=off
-    active_color=0xff5e81ac
-    inactive_color=0xff4c566a  # A darker shade of the active color for aesthetic contrast
+	width=3.0
+	hidpi=on
+	active_color=0xff7aa2f7
+	inactive_color=0xff24283b
 )
 
 borders "${options[@]}"

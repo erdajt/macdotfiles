@@ -1,56 +1,27 @@
-[colors.bright]
-black = "#444b6a"
-blue = "#7da6ff"
-cyan = "#0db9d7"
-green = "#b9f27c"
-magenta = "#bb9af7"
-red = "#ff7a93"
-white = "#acb0d0"
-yellow = "#ff9e64"
-
-[colors.normal]
-black = "#32344a"
-blue = "#7aa2f7"
-cyan = "#449dab"
-green = "#9ece6a"
-magenta = "#ad8ee6"
-red = "#f7768e"
-white = "#787c99"
-yellow = "#e0af68"
-
-[colors.primary]
-background = "#15151d"
-foreground = "#a9b1d6"
-
-[colors.cursor]
-cursor = "#d9e5f1"
-text = "#0d1925"
-
-[colors.selection]
-background = "#d9e6f2"
-text = "#0d1925"
+[general]
+import = ["~/.config/alacritty/themes/active.toml"]
 
 [env]
 WINIT_X11_SCALE_FACTOR = "1.0"
 
 [font]
-size = 19.0
-normal = { family = "CaskaydiaCove Nerd Font Mono", style = "Regular" }
-bold = { family = "CaskaydiaCove Nerd Font Mono", style = "Bold" }
-italic = { family = "CaskaydiaCove Nerd Font Mono", style = "Italic" }
-bold_italic = { family = "CaskaydiaCove Nerd Font Mono", style = "Bold Italic" }
+size = 16.0
+normal = { family = "Cascadia Code NF", style = "SemiBold Italic" }
+bold = { family = "Cascadia Code NF", style = "Bold" }
+italic = { family = "Cascadia Code NF", style = "Italic" }
+bold_italic = { family = "Cascadia Code NF", style = "Bold Italic" }
 offset = { x = 0, y = 0 }
 glyph_offset = { x = 0, y = 0 }
 
 [window]
 decorations = "buttonless"
 dynamic_padding = true
-opacity = 0.95
+opacity = 1.00
 startup_mode = "Maximized"
 padding = { x = 0, y = 0 }
 
 [scrolling]
-history = 10000
+history = 5000
 multiplier = 3
 
 [mouse]
@@ -75,3 +46,13 @@ log_level = "Warn"
 [selection]
 semantic_escape_chars = ",│`|:\"' ()[]{}<>\\t"
 save_to_clipboard = true
+
+[[keyboard.bindings]]
+key = "A"
+mods = "Super|Shift"
+command = { program = "$HOME/.config/alacritty/opacity.sh", args = ["-"] }
+
+[[keyboard.bindings]]
+key = "D"
+mods = "Super|Shift"
+command = { program = "$HOME/.config/alacritty/opacity.sh", args = ["+"] }

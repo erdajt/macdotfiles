@@ -1,0 +1,189 @@
+# AeroSpace Config - 1:1 Hyprland keybinds
+# Main modifier: alt/option (SUPER equivalent, avoids macOS cmd conflicts)
+
+after-login-command = []
+after-startup-command = [
+    'exec-and-forget borders active_color=0xff7aa2f7 inactive_color=0xff24283b width=3.0 style=round',
+    'exec-and-forget brew services start felixkratz/formulae/sketchybar',
+]
+
+# Notify sketchybar on workspace change
+exec-on-workspace-change = ['/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+
+# Start AeroSpace at login
+start-at-login = true
+
+# Normalizations
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Mouse follows focus
+on-focus-changed = ['move-mouse window-lazy-center']
+
+# Layout - dwindle equivalent (BSP)
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Gaps matching hyprland: gaps_in=4, gaps_out=10
+[gaps]
+inner.horizontal = 8
+inner.vertical = 8
+outer.left = 10
+outer.right = 10
+outer.bottom = 10
+outer.top = 20
+
+# Window detection (hide macOS menu bar handled by sketchybar)
+[mode.main.binding]
+
+# ============================================
+# Applications (matching hyprland keybinds)
+# ============================================
+
+# OPT+Q = terminal
+alt-q = 'exec-and-forget open -na Alacritty'
+
+# OPT+E = file manager (Finder on mac)
+alt-e = 'exec-and-forget open -na Finder'
+
+# OPT+SPACE = app launcher (fzf themed picker)
+alt-space = 'exec-and-forget $HOME/.config/aerospace/scripts/launcher.sh'
+
+# OPT+SHIFT+A = decrease opacity, OPT+SHIFT+D = increase opacity
+alt-shift-a = 'exec-and-forget $HOME/.config/alacritty/opacity.sh -'
+alt-shift-d = 'exec-and-forget $HOME/.config/alacritty/opacity.sh +'
+
+# OPT+SHIFT+Q = close/kill active window
+alt-shift-q = 'close'
+
+# ============================================
+# Window management
+# ============================================
+
+# OPT+F = fullscreen (fill workspace)
+alt-f = 'fullscreen'
+
+# OPT+SHIFT+V = toggle floating
+alt-shift-v = 'layout floating tiling'
+
+# OPT+I = toggle split orientation
+alt-i = 'layout tiles horizontal vertical'
+
+# ============================================
+# Vim-style focus movement (OPT+HJKL)
+# ============================================
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+
+# ============================================
+# Vim-style window movement (OPT+SHIFT+HJKL)
+# ============================================
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+
+# ============================================
+# Workspaces (OPT+1-0 = workspace 1-10)
+# ============================================
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+alt-0 = 'workspace 10'
+
+# Move window to workspace and follow (OPT+SHIFT+1-0)
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+alt-shift-0 = ['move-node-to-workspace 10', 'workspace 10']
+
+# ============================================
+# Resize mode (like hyprland resize submap)
+# ============================================
+alt-r = 'mode resize'
+
+# ============================================
+# Utilities
+# ============================================
+
+# OPT+W = wallpaper picker
+alt-w = 'exec-and-forget $HOME/.config/aerospace/scripts/wallpicker.sh'
+
+# OPT+D = close all notifications
+alt-d = 'exec-and-forget $HOME/.config/aerospace/scripts/dismiss-notifications.sh'
+
+# OPT+S = screenshot area copy to clipboard
+alt-s = 'exec-and-forget screencapture -ic'
+
+# OPT+SHIFT+S = screenshot save to ~/Screenshots
+alt-shift-s = 'exec-and-forget mkdir -p ~/Screenshots && screencapture -i ~/Screenshots/screenshot-$(date +%Y%m%d-%H%M%S).png'
+
+# OPT+SHIFT+W = toggle sketchybar
+alt-shift-w = 'exec-and-forget pgrep sketchybar && brew services stop felixkratz/formulae/sketchybar || brew services start felixkratz/formulae/sketchybar'
+
+# OPT+SHIFT+T = theme toggle
+alt-shift-t = 'exec-and-forget $HOME/.config/aerospace/scripts/theme-toggle.sh'
+
+# Reload config
+alt-shift-r = 'reload-config'
+
+# Balance window sizes
+alt-b = 'balance-sizes'
+
+# ============================================
+# Resize mode
+# ============================================
+[mode.resize.binding]
+h = 'resize width -50'
+j = 'resize height +50'
+k = 'resize height -50'
+l = 'resize width +50'
+esc = 'mode main'
+enter = 'mode main'
+
+# ============================================
+# Window rules
+# ============================================
+[[on-window-detected]]
+if.window-title-regex-substring = 'Theme Toggle|Wallpaper Picker|App Launcher'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'System Preferences|System Settings'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Calculator'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Archive Utility'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Raycast'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Simulator'
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Preview'
+run = 'layout floating'
